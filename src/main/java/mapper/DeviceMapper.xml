@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.DeviceMapper">
+
+    <select id="findAll" resultType="model.Device">
+        SELECT
+            id, name, cpu, ram, storage, os, updated_at AS updatedAt
+        FROM devices
+    </select>
+
+    <select id="findById" parameterType="int" resultType="model.Device">
+        SELECT
+            id, name, cpu, ram, storage, os, updated_at AS updatedAt
+        FROM devices
+        WHERE id = #{id}
+    </select>
+
+    <update id="save" parameterType="model.Device">
+        MERGE INTO devices (
+            id, name, cpu, ram, storage, os, updated_at
+        )
+        KEY(id)
+        VALUES (
+            #{id}, #{name}, #{cpu}, #{ram}, #{storage}, #{os}, #{updatedAt}
+        )
+    </update>
+
+</mapper>
