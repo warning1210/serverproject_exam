@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>회사 홈페이지</title>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+    }
+
+    header {
+        background-color: #222;
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    nav button {
+        margin-left: 10px;
+        padding: 8px 15px;
+        background-color: white;
+        border: 1px solid #ccc;
+        cursor: pointer;
+    }
+
+    nav button:hover {
+        background-color: #ddd;
+    }
+
+    .menu {
+        background-color: white;
+        padding: 12px 30px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .menu span {
+        margin-right: 25px;
+        cursor: pointer;
+    }
+
+    #main {
+        width: 80%;
+        min-height: 500px;
+        margin: 30px auto;
+        background-color: white;
+        padding: 30px;
+        border: 1px solid #ddd;
+    }
+
+    footer {
+        background-color: #222;
+        color: white;
+        text-align: center;
+        padding: 18px;
+    }
+
+    input {
+        width: 250px;
+        padding: 10px;
+        margin: 8px;
+    }
+
+    .form-box {
+        width: 500px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .form-box button {
+        padding: 10px 25px;
+        margin: 10px;
+        cursor: pointer;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #eee;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>로고</h1>
+    <nav>
+        <button onclick="showLogin()">로그인</button>
+        <button onclick="showJoin()">회원가입</button>
+    </nav>
+</header>
+
+<div class="menu">
+    <span onclick="showMain()">메인페이지</span>
+    <span>갤러리</span>
+    <span onclick="loadDevices()">외부데이터</span>
+    <span>게시판</span>
+</div>
+
+<div id="main">
+    <h2>메인 콘텐츠</h2>
+    <p>여기에 메인 콘텐츠가 들어갑니다.</p>
+</div>
+
+<footer>
+    © 2025 회사명. All rights reserved.
+</footer>
+
+<script>
+const API = "http://localhost:8888";
+
+function showMain() {
+    document.getElementById("main").innerHTML = `
+        <h2>메인 콘텐츠</h2>
+        <p>여기에 메인 콘텐츠가 들어갑니다.</p>
+    `;
+}
+
+function showJoin() {
+    document.getElementById("main").innerHTML = `
+        <div class="form-box">
+            <h2>회원가입 양식</h2>
+            <input type="text" id="name" placeholder="이름"><br>
+            <input type="text" id="username" placeholder="아이디"><br>
+            <input type="password" id="password" placeholder="비밀번호"><br>
+            <input type="password" id="passwordCheck" placeholder="비밀번호 확인"><br>
+            <button onclick="checkPassword()">비밀번호 확인</button><br>
+            <input type="email" id="email" placeholder="이메일"><br>
+            <button onclick="showMain()">가입취소</button>
+            <button onclick="join()">회원가입</button>
+        </div>
+    `;
+}
+
+function checkPassword() {
+    const pw = document.getElementById("password").value;
+    const pwc = document.getElementById("passwordCheck").value;
+
+    if (pw === pwc && pw !== "") {
+        alert("비밀번호가 일치합니다.");
+    } else {
+        alert("비밀번호가 일치하지 않습니다.");
+    }
+}
+
+function join() {
+    const pw = document.getElementById("password").value;
+    const pwc = document.getElementById("passwordCheck").value;
+
+    if (pw !== pwc) {
+        alert("비밀번호 확인이 일치하지 않습니다.");
+        return;
+    }
+
+    const data = {
+        name: document.getElementById("name").value,
+        username: document.getElementById("username").value,
+        password: pw,
+        email: document.getElementById("email").value
+    };
+
+    fetch(API + "/api/users", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.text())
+    .then(result => {
+        alert("회원가입 성공");
+        showLogin();
+    })
+    .catch(err => {
+        alert("회원가입 실패");
+        console.log(err);
+    });
+}
+
+function showLogin() {
+    document.getElementById("main").innerHTML = `
+        <div class="form-box">
+            <h2>로그인</h2>
+            <input type="text" id="loginUsername" placeholder="아이디"><br>
+            <input type="password" id="loginPassword" placeholder="비밀번호"><br>
+            <button onclick="login()">로그인</button>
+        </div>
+    `;
+}
+
+function login() {
+    const data = {
+        username: document.getElementById("loginUsername").value,
+        password: document.getElementById("loginPassword").value
+    };
+
+    fetch(API + "/api/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.text())
+    .then(result => {
+        if (result === "SUCCESS") {
+            alert("로그인 성공");
+            showMain();
+        } else {
+            alert("로그인 실패");
+        }
+    })
+    .catch(err => {
+        alert("로그인 오류");
+        console.log(err);
+    });
+}
+
+function loadDevices() {
+    fetch(API + "/api/devices")
+    .then(res => res.json())
+    .then(data => {
+        let html = `
+            <h2>외부데이터 목록</h2>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>NAME</th>
+                    <th>CPU</th>
+                    <th>RAM</th>
+                    <th>STORAGE</th>
+                    <th>OS</th>
+                </tr>
+        `;
+
+        data.forEach(d => {
+            html += `
+                <tr onclick="loadDeviceDetail(${d.id})">
+                    <td>${d.id}</td>
+                    <td>${d.name}</td>
+                    <td>${d.cpu}</td>
+                    <td>${d.ram}</td>
+                    <td>${d.storage}</td>
+                    <td>${d.os}</td>
+                </tr>
+            `;
+        });
+
+        html += `</table>`;
+        document.getElementById("main").innerHTML = html;
+    })
+    .catch(err => {
+        alert("외부데이터 조회 실패");
+        console.log(err);
+    });
+}
+
+function loadDeviceDetail(id) {
+    fetch(API + "/api/devices/" + id)
+    .then(res => res.json())
+    .then(d => {
+        document.getElementById("main").innerHTML = `
+            <h2>외부데이터 상세</h2>
+            <p><b>ID:</b> ${d.id}</p>
+            <p><b>NAME:</b> ${d.name}</p>
+            <p><b>CPU:</b> ${d.cpu}</p>
+            <p><b>RAM:</b> ${d.ram}</p>
+            <p><b>STORAGE:</b> ${d.storage}</p>
+            <p><b>OS:</b> ${d.os}</p>
+            <p><b>UPDATED_AT:</b> ${d.updatedAt}</p>
+            <button onclick="loadDevices()">목록으로</button>
+        `;
+    });
+}
+</script>
+
+</body>
+</html>
