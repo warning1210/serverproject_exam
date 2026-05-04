@@ -24,6 +24,11 @@ public class UserController {
     @PostMapping("/login")
     public String login(@RequestBody User user){
         User result = service.login(user);
-        return result != null ? "SUCCESS" : "FAIL";
+
+        if(result != null){
+            return result.getName(); // 로그인 성공 시 이름 반환
+        } else {
+            return "FAIL";
+        }
     }
 }
