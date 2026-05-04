@@ -4,114 +4,113 @@
 <meta charset="UTF-8">
 <title>회사 홈페이지</title>
 <style>
-    * {
-        box-sizing: border-box;
-    }
+* { box-sizing: border-box; }
 
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background-color: #f5f5f5;
-    }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+}
 
-    header {
-        background-color: #222;
-        color: white;
-        padding: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+header {
+    background-color: #222;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    header h1 {
-        margin: 0;
-        font-size: 24px;
-    }
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
 
-    nav button {
-        margin-left: 10px;
-        padding: 8px 15px;
-        background-color: white;
-        border: 1px solid #ccc;
-        cursor: pointer;
-    }
+nav button {
+    margin-left: 10px;
+    padding: 8px 15px;
+    background-color: white;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
 
-    nav button:hover {
-        background-color: #ddd;
-    }
+nav button:hover { background-color: #ddd; }
 
-    .menu {
-        background-color: white;
-        padding: 12px 30px;
-        border-bottom: 1px solid #ddd;
-    }
+#navArea span {
+    color: white;
+    font-weight: bold;
+}
 
-    .menu span {
-        margin-right: 25px;
-        cursor: pointer;
-    }
+.menu {
+    background-color: white;
+    padding: 12px 30px;
+    border-bottom: 1px solid #ddd;
+}
 
-    #main {
-        width: 80%;
-        min-height: 500px;
-        margin: 30px auto;
-        background-color: white;
-        padding: 30px;
-        border: 1px solid #ddd;
-    }
+.menu span {
+    margin-right: 25px;
+    cursor: pointer;
+}
 
-    footer {
-        background-color: #222;
-        color: white;
-        text-align: center;
-        padding: 18px;
-    }
+#main {
+    width: 80%;
+    min-height: 500px;
+    margin: 30px auto;
+    background-color: white;
+    padding: 30px;
+    border: 1px solid #ddd;
+}
 
-    input {
-        width: 250px;
-        padding: 10px;
-        margin: 8px;
-    }
+footer {
+    background-color: #222;
+    color: white;
+    text-align: center;
+    padding: 18px;
+}
 
-    .form-box {
-        width: 500px;
-        margin: 0 auto;
-        text-align: center;
-    }
+input {
+    width: 250px;
+    padding: 10px;
+    margin: 8px;
+}
 
-    .form-box button {
-        padding: 10px 25px;
-        margin: 10px;
-        cursor: pointer;
-    }
+.form-box {
+    width: 500px;
+    margin: 0 auto;
+    text-align: center;
+}
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
+.form-box button {
+    padding: 10px 25px;
+    margin: 10px;
+    cursor: pointer;
+}
 
-    th, td {
-        border: 1px solid #ccc;
-        padding: 10px;
-        text-align: center;
-    }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
 
-    th {
-        background-color: #eee;
-    }
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
 
-    tr:hover {
-        background-color: #f1f1f1;
-        cursor: pointer;
-    }
+th { background-color: #eee; }
+
+tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
 </style>
 </head>
 <body>
 
 <header>
     <h1>로고</h1>
-    <nav>
+    <nav id="navArea">
         <button onclick="showLogin()">로그인</button>
         <button onclick="showJoin()">회원가입</button>
     </nav>
@@ -230,9 +229,17 @@ function login() {
     })
     .then(res => res.text())
     .then(result => {
-        if (result === "SUCCESS") {
+        if (result !== "FAIL") {
             alert("로그인 성공");
-            showMain();
+
+            document.getElementById("navArea").innerHTML = `
+                <span>${result} 님</span>
+            `;
+
+            document.getElementById("main").innerHTML = `
+                <h2>메인 콘텐츠</h2>
+                <p>${result} 님 환영합니다.</p>
+            `;
         } else {
             alert("로그인 실패");
         }
